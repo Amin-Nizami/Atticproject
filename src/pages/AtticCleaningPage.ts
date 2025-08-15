@@ -102,25 +102,50 @@ export class AtticCleaningPage {
   async navigate(): Promise<void> {
     console.log(`🔗 Navigating to: ${this.url}`);
     
-    await this.page.goto(this.url, { 
-      waitUntil: 'networkidle',
-      timeout: 45000 
-    });
+    try {
+      // Try with networkidle first
+      await this.page.goto(this.url, { 
+        waitUntil: 'networkidle',
+        timeout: 45000 
+      });
+    } catch (error) {
+      console.log('⚠️ Network timeout with networkidle, trying domcontentloaded...');
+      try {
+        await this.page.goto(this.url, { 
+          waitUntil: 'domcontentloaded',
+          timeout: 30000 
+        });
+      } catch (fallbackError) {
+        console.log('⚠️ Navigation failed, trying basic load...');
+        await this.page.goto(this.url, { 
+          waitUntil: 'load',
+          timeout: 20000 
+        });
+      }
+    }
 
     // Wait for critical elements to load with fallback strategies
     try {
       await this.page.waitForSelector('h1', { state: 'visible', timeout: 15000 });
+      console.log('✅ Primary h1 found');
     } catch (error) {
       console.log('⚠️ Primary h1 not found, trying fallback selectors...');
       try {
-        await this.page.waitForSelector('.service-title, .page-title', { state: 'visible', timeout: 10000 });
+        await this.page.waitForSelector('.service-title, .page-title, .entry-title', { state: 'visible', timeout: 10000 });
+        console.log('✅ Fallback title selector found');
       } catch (fallbackError) {
-        console.log('⚠️ Fallback selectors also failed, continuing with basic wait...');
+        console.log('⚠️ Fallback selectors also failed, trying any heading...');
+        try {
+          await this.page.waitForSelector('h1, h2, h3', { state: 'visible', timeout: 5000 });
+          console.log('✅ Any heading found');
+        } catch (finalError) {
+          console.log('⚠️ No headings found, continuing with basic wait...');
+        }
       }
     }
 
     // Additional wait for dynamic content
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(3000);
     console.log('✅ Navigation completed');
   }
 
