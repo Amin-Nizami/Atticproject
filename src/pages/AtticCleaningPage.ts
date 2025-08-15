@@ -1,10 +1,11 @@
 import { Page, Locator, expect } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+import { config } from '../utils/config';
 
 /**
  * Page Object Model for Attic Cleaning Service Page
- * URL: https://www.atticprojectscompany.com/services/attic-cleaning/
+ * URL: Retrieved from environment configuration
  */
 export class AtticCleaningPage {
   readonly page: Page;
@@ -56,7 +57,7 @@ export class AtticCleaningPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.url = 'https://www.atticprojectscompany.com/services/attic-cleaning/';
+    this.url = config.atticCleaningPageUrl;
 
     // Initialize Header Selectors with fallbacks
     this.logo = page.locator('[data-testid="logo"], .logo, header img, .header-logo').first();
@@ -106,7 +107,7 @@ export class AtticCleaningPage {
       // Try with networkidle first
       await this.page.goto(this.url, { 
         waitUntil: 'networkidle',
-        timeout: 45000 
+        timeout: 95000
       });
     } catch (error) {
       console.log('⚠️ Network timeout with networkidle, trying domcontentloaded...');

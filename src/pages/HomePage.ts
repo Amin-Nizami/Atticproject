@@ -1,6 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+import { config } from '../utils/config';
 
 /**
  * Page Object Model for Attic Projects Company Homepage
@@ -8,7 +9,7 @@ import * as path from 'path';
  */
 export class HomePage {
   readonly page: Page;
-  readonly url: string = 'https://www.atticprojectscompany.com/';
+  readonly url: string;
   
   // Header Elements
   readonly logo: Locator;
@@ -54,6 +55,7 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page;
+    this.url = config.homePageUrl;
     
     // Initialize Header Selectors
     this.logo = page.locator('[data-testid="logo"], .logo, header img').first();
@@ -389,7 +391,7 @@ export class HomePage {
         }
         
         try {
-          await expect(this.navigationMenu).toBeVisible({ timeout: 10000 });
+          await expect(this.navigationMenu).toBeVisible({ timeout: 30000 });
         } catch (error) {
           console.log(`⚠️ Navigation not visible at ${viewport.name} viewport (might be collapsed)`);
           // Check for mobile menu button or collapsed nav

@@ -87,6 +87,12 @@ function main() {
     case 'all':
       runCommand('npx playwright test', 'Running all tests');
       break;
+      
+//npx playwright test --grep "Homepage" --project=chromium
+
+case 'homepagechromiumworker1':
+  runCommand('npx playwright test --grep="Homepage" --project=chromium --workers=1');
+  break;
 
     case 'homepage':
       runCommand('npx playwright test --grep "Homepage"', 'Running homepage tests');

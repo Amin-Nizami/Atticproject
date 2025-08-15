@@ -1,12 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
+import { config } from './src/utils/config';
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -24,20 +25,20 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Global timeout for each test */
-  timeout: 60 * 1000, // 60 seconds per test
+  timeout: config.testTimeout,
   /* Expect timeout for assertions */
   expect: {
-    timeout: 15 * 1000, // 15 seconds for expect assertions
+    timeout: config.expectTimeout,
   },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: config.baseUrl,
 
     /* Navigation timeout */
-    navigationTimeout: 45 * 1000, // 45 seconds for page navigation
+    navigationTimeout: config.navigationTimeout,
     /* Action timeout */
-    actionTimeout: 15 * 1000, // 15 seconds for actions like click, fill, etc.
+    actionTimeout: config.actionTimeout,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
